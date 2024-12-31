@@ -25,9 +25,9 @@ import androidx.navigation.NavController
 @Composable
 fun Prof(navController: NavController, modifier: Modifier = Modifier) {
 
-    data class User(val name: String, val jobTitle: String)
+    data class User(val name: String, val permissionLevel: Int)
     // TODO: Populate this with actual data from backend
-    val currentUser = User("John User", "District Manager")
+    val currentUser = User("John User", 5)
     Column (
         modifier = modifier
     ) {
@@ -67,7 +67,7 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
             )
 
             Text(
-                text = "Job title",
+                text = "Permission level",
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
                 fontSize = 30.sp,
@@ -75,7 +75,7 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
             )
             Text(
                 fontSize = 30.sp,
-                text = currentUser.jobTitle
+                text = "Level " + currentUser.permissionLevel.toString()
             )
         }
         BotNavBar(navController = navController, modifier = modifier.height(60.dp))
