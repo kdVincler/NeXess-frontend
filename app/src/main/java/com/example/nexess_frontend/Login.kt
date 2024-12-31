@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
     var un by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
+
     Column (
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,6 +71,11 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
                     un = input
                 },
                 label = { Text("Username") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
             )
         }
         Row (
@@ -89,7 +96,8 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
                 },
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
             )
         }
         Button(
