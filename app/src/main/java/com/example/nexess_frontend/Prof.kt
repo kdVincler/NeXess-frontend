@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -77,6 +79,23 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
                 fontSize = 30.sp,
                 text = "Level " + currentUser.permissionLevel.toString()
             )
+            Button(
+                onClick = {
+                    // TODO: Call to backend to actually log out, then navigate
+                    navController.navigate(Routes.LGN)
+                },
+                colors = ButtonDefaults
+                    .buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                modifier = Modifier.padding(top = 15.dp)
+            ) {
+                Text(
+                    fontSize = 30.sp,
+                    text = "Log out"
+                )
+            }
         }
         BotNavBar(navController = navController, modifier = modifier.height(60.dp))
     }
