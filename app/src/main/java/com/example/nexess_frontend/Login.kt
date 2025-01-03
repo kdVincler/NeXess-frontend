@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -49,7 +50,7 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
     ) {
         Text(
             text = "Log in to your account",
-            fontSize = 35.sp,
+            fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = modifier.padding(5.dp)
@@ -76,6 +77,8 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 ),
+                modifier = modifier
+                    .width(300.dp)
             )
         }
         Row (
@@ -98,6 +101,8 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
+                modifier = modifier
+                    .width(300.dp)
             )
         }
         Button(
