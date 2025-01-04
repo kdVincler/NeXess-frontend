@@ -10,7 +10,7 @@ import io.ktor.http.headers
 
 object KtorClient {
     private val client = HttpClient(CIO)
-    private const val API = "http://<IP ADDRESS>:8000" // TODO: CHANGE THIS TO CURRENT IP OF LAPTOP
+    private const val API = "http://${BuildConfig.IP}:8000"
 
     suspend fun checkServerHealth(): String{
         val response = client.get("$API/health/") {

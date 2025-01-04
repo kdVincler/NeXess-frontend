@@ -1,8 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
+
+// Load properties a.k.a "env variables" from env.properties
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("env.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+val ipAddress: String = localProperties.getProperty("IP_ADDRESS") ?: ""
 
 android {
     namespace = "com.example.nexess_frontend"
@@ -11,11 +21,18 @@ android {
     defaultConfig {
         applicationId = "com.example.nexess_frontend"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "IP",
+            ipAddress
+        )
     }
 
     buildTypes {
@@ -36,6 +53,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
