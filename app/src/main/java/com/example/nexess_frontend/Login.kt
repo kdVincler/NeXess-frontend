@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import io.ktor.client.statement.HttpResponse
+import kotlinx.coroutines.launch
 
 @Composable
 fun Login_(navController: NavController, modifier: Modifier = Modifier) {
@@ -40,6 +43,8 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
     var un by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    var response by remember { mutableStateOf<HttpResponse?>(null) }
 
     Column (
         verticalArrangement = Arrangement.Center,
@@ -109,7 +114,15 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
             onClick = {
                 // TODO: Auth. call to the backend then if successful navigate, and set the user globally and persistently
                 if (un.isNotBlank() && pw.isNotBlank()) {
-                    navController.navigate(Routes.RDR)
+                    scope.launch {
+                        try {
+                            // response = KtorClient.ajax_function()
+                            // If response.status is OK, navigate and set user
+                            navController.navigate(Routes.RDR)
+                        } catch (e: Exception) {
+                            println(e)
+                        }
+                    }
                 } else {
                     showAlert = true
                 }
