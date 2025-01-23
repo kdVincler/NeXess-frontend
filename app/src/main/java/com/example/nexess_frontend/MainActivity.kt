@@ -14,6 +14,7 @@ import com.example.nexess_frontend.ui.theme.NeXessFrontendTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        KtorClient.init(this)
         enableEdgeToEdge()
         setContent {
             NeXessFrontendTheme {

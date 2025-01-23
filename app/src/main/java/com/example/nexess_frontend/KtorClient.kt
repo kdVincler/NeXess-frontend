@@ -1,12 +1,12 @@
 package com.example.nexess_frontend
 
+import android.content.Context
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.plugins.cookies.cookies
-import io.ktor.client.request.accept
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
@@ -14,17 +14,10 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.header.AcceptEncoding
-import io.ktor.http.headers
 import kotlinx.serialization.Serializable
 
 object KtorClient {
-    private val client = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            json()
-        }
-        install(HttpCookies) // TODO: make
-    }
+    private lateinit var client: HttpClient
     private const val API = "http://${BuildConfig.IP}:8000"
 
     @Serializable
@@ -79,7 +72,6 @@ object KtorClient {
             throw Exception("Error while checking authentication status. (${response.status.value})")
         }
         val status: AuthStatus = response.body()
-        println(client.cookies(API))
         if (status.authenticated) {
             // TODO: set user globally to status.user's values
             return true
@@ -92,12 +84,22 @@ object KtorClient {
     suspend fun logout(){
         val response = client.get("$API/logout/")
         if (response.status.value != 200) {
-            val b: ErrorMsg = response.body()
             throw Exception("Error while logging out. (${response.status.value})")
         }
         // checkAuthStat unnecessary as LaunchedEffect in Login_ will run and update
         // and if logout is unsuccessful, redirection wont happen so user will stay logged in
         // with their data staying
+    }
+
+    fun init(context: Context) {
+        client = HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json()
+            }
+            install(HttpCookies) {
+                storage = CustomSecurePersistentCookieStorage(context)
+            }
+        }
     }
 
     fun close() {
