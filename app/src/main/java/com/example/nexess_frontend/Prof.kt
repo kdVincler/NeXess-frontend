@@ -14,6 +14,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,13 +28,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 
 @Composable
 fun Prof(navController: NavController, modifier: Modifier = Modifier) {
-
-    data class User(val name: String, val permissionLevel: Int)
-    // TODO: Populate this with actual data from backend
-    val currentUser = User("John User", 5)
+    data class User(val name: String, val permissionLevel: Int) // TODO: after implementing global user var, delete
+    val currentUser = User("John User", 5) // TODO: after implementing global user var, delete
+    var popUpText by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var showAlert by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     Column (
         modifier = modifier
     ) {
@@ -81,8 +89,18 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
             )
             Button(
                 onClick = {
-                    // TODO: Call to backend to actually log out, then navigate
-                    navController.navigate(Routes.LGN)
+                    scope.launch {
+                        isLoading = true
+                        try {
+                           KtorClient.logout()
+                            navController.navigate(Routes.LGN)
+                        } catch (e: Exception) {
+                            popUpText = "${e.message}"
+                            showAlert = true
+                        } finally {
+                            isLoading = false
+                        }
+                    }
                 },
                 colors = ButtonDefaults
                     .buttonColors(
@@ -98,5 +116,7 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
             }
         }
         BotNavBar(navController = navController, modifier = modifier.height(60.dp))
+        AlertPopup(showAlert, "Error", popUpText, onDismiss = {popUpText = ""; showAlert = false })
+        LoadingOverlay(isLoading)
     }
 }

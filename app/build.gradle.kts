@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.1.0"
 }
 
 // Load properties a.k.a "env variables" from env.properties
@@ -82,5 +83,7 @@ dependencies {
     implementation(libs.ktor.client.json)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.serialization)
+    implementation(libs.io.ktor.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
 
 }

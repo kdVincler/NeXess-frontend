@@ -13,12 +13,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,17 +34,35 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.launch
 
 @Composable
 fun Login_(navController: NavController, modifier: Modifier = Modifier) {
-    // TODO: switch to rememberSaveable {}
     var un by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
+    var popUpText by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
     var showAlert by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    var response by remember { mutableStateOf<HttpResponse?>(null) }
+
+    // if user is logged in, skip login screen
+    // ensures that every time this composable is shows, the LaunchedEffect runs
+    val timeMillisecond = remember { System.currentTimeMillis() }
+    LaunchedEffect(timeMillisecond) {
+        scope.launch {
+            isLoading = true
+            try {
+                if (KtorClient.checkAuthStat()) {
+                    navController.navigate(Routes.RDR)
+                }
+            } catch (e: Exception) {
+                popUpText = "${e.message}"
+                showAlert = true
+            } finally {
+                isLoading = false
+            }
+        }
+    }
 
     Column (
         verticalArrangement = Arrangement.Center,
@@ -112,18 +130,21 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
         }
         Button(
             onClick = {
-                // TODO: Auth. call to the backend then if successful navigate, and set the user globally and persistently
                 if (un.isNotBlank() && pw.isNotBlank()) {
                     scope.launch {
+                        isLoading = true
                         try {
-                            // response = KtorClient.ajax_function()
-                            // If response.status is OK, navigate and set user
+                            KtorClient.login(un, pw)
                             navController.navigate(Routes.RDR)
                         } catch (e: Exception) {
-                            println(e)
+                            popUpText = "${e.message}"
+                            showAlert = true
+                        } finally {
+                            isLoading = false
                         }
                     }
                 } else {
+                    popUpText = "Please fill in both username and password"
                     showAlert = true
                 }
             },
@@ -132,16 +153,7 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
             Text(text = "Log in", fontSize = 20.sp)
         }
     }
-    if (showAlert) {
-        AlertDialog(
-            onDismissRequest = { showAlert = false },
-            title = { Text("Cannot submit") },
-            text = { Text("Please fill in both username and password") },
-            confirmButton = {
-                Button(onClick = { showAlert = false }) {
-                    Text("OK")
-                }
-            }
-        )
-    }
+
+    AlertPopup(showAlert, "Cannot Submit", popUpText, onDismiss = {popUpText = ""; showAlert = false })
+    LoadingOverlay(isLoading)
 }
