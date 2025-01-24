@@ -21,8 +21,6 @@ object KtorClient {
     private const val API = "http://${BuildConfig.IP}:8000"
 
     @Serializable
-    data class HealthMsg(val message: String)
-    @Serializable
     data class ErrorMsg(val error: String)
     @Serializable
     data class LoginUser(val un: String, val pw: String)
@@ -44,7 +42,7 @@ object KtorClient {
         }
         if (response.status.value != 200) {
             val b: ErrorMsg = response.body()
-            throw Exception("Error while logging in. Description: ${b.error} (${response.status.value})")
+            throw Exception("Exception raised during login. Description: ${b.error} (${response.status.value})")
         }
         // checkAuthStat to update global user
         checkAuthStat()
@@ -57,7 +55,7 @@ object KtorClient {
             }
         }
         if (response.status.value != 200) {
-            throw Exception("Error while checking authentication status. (${response.status.value})")
+            throw Exception("Exception raised during authentication status check. (${response.status.value})")
         }
         val status: AuthStatus = response.body()
         if (status.authenticated) {
@@ -72,11 +70,10 @@ object KtorClient {
     suspend fun logout(){
         val response = client.get("$API/logout/")
         if (response.status.value != 200) {
-            throw Exception("Error while logging out. (${response.status.value})")
+            throw Exception("Exception raised during logout. (${response.status.value})")
         }
-        // checkAuthStat unnecessary as LaunchedEffect in Login_ will run and update
-        // and if logout is unsuccessful, redirection wont happen so user will stay logged in
-        // with their data staying
+        // checkAuthStat to update global user
+        checkAuthStat()
     }
 
     fun init(context: Context) {

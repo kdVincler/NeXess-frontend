@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,25 +43,6 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
     var isLoading by remember { mutableStateOf(false) }
     var showAlert by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
-    // if user is logged in, skip login screen
-    // ensures that every time this composable is shows, the LaunchedEffect runs
-    val timeMillisecond = remember { System.currentTimeMillis() }
-    LaunchedEffect(timeMillisecond) {
-        scope.launch {
-            isLoading = true
-            try {
-                if (KtorClient.checkAuthStat()) {
-                    navController.navigate(Routes.RDR)
-                }
-            } catch (e: Exception) {
-                popUpText = "${e.message}"
-                showAlert = true
-            } finally {
-                isLoading = false
-            }
-        }
-    }
 
     Column (
         verticalArrangement = Arrangement.Center,
@@ -154,6 +134,6 @@ fun Login_(navController: NavController, modifier: Modifier = Modifier) {
         }
     }
 
-    AlertPopup(showAlert, "Cannot Submit", popUpText, onDismiss = {popUpText = ""; showAlert = false })
+    AlertPopup(showAlert, "Login failed", popUpText, onDismiss = {popUpText = ""; showAlert = false })
     LoadingOverlay(isLoading)
 }

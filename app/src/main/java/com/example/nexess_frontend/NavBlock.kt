@@ -9,7 +9,10 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun NavBlock(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Routes.LGN, builder = {
+    NavHost(navController = navController, startDestination = Routes.SPL, builder = {
+        composable(Routes.SPL) {
+            SplashScreen_(navController = navController, modifier = modifier)
+        }
         composable(Routes.LGN) {
             Login_(navController = navController, modifier = modifier)
         }
