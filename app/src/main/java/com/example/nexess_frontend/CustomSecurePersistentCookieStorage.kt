@@ -19,9 +19,9 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
         written based on the Ktor documentation's AcceptAllCookiesStorage.kt
         (https://ktor.io/docs/client-cookies.html#custom_storage)
         and reworked with the usage principles inferred from Shared Preferences usage tutorial
-        https://www.geeksforgeeks.org/shared-preferences-in-android-with-examples/
+        (https://www.geeksforgeeks.org/shared-preferences-in-android-with-examples/)
         for EncryptedSharedPreferences
-        https://developer.android.com/reference/kotlin/androidx/security/crypto/EncryptedSharedPreferences
+        (https://developer.android.com/reference/kotlin/androidx/security/crypto/EncryptedSharedPreferences)
      */
 
     private val masterKey: MasterKey = MasterKey.Builder(c)

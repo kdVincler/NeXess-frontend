@@ -33,18 +33,6 @@ object KtorClient {
     @Serializable
     data class AuthStatus(val authenticated: Boolean, val user: AuthUser?)
 
-    suspend fun checkServerHealth(): String{
-        val response = client.get("$API/health/") {
-            contentType(ContentType.Application.Json)
-        }
-        if (response.status.value != 200) {
-            val b: ErrorMsg = response.body()
-            throw Exception("Error checking server health. Desc.: ${b.error} (${response.status.value})")
-        }
-        val msg: HealthMsg = response.body()
-        return  msg.message
-    }
-
     suspend fun login(un: String, pw: String){
         val csrfToken = client.cookies(API).firstOrNull{it.name == "csrftoken"}?.value ?: ""
         val response = client.post("$API/login/") {
@@ -56,7 +44,7 @@ object KtorClient {
         }
         if (response.status.value != 200) {
             val b: ErrorMsg = response.body()
-            throw Exception("Error while logging in. Desc.: ${b.error} (${response.status.value})")
+            throw Exception("Error while logging in. Description: ${b.error} (${response.status.value})")
         }
         // checkAuthStat to update global user
         checkAuthStat()
