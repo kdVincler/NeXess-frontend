@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import io.ktor.client.plugins.cookies.CookiesStorage
+import io.ktor.client.plugins.cookies.fillDefaults
+import io.ktor.client.plugins.cookies.matches
 import io.ktor.http.Cookie
 import io.ktor.http.Url
 import io.ktor.util.date.GMTDate
@@ -46,25 +48,27 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
 
         mx.withLock {
             // currently stored (string) encoded cookie set
-            var cEncoded = secureCookieStore.getStringSet("cookies", emptySet())
+            var cEncoded = secureCookieStore.getStringSet("cookies", mutableSetOf<String>()) ?: mutableSetOf<String>()
             // currently stored decoded cookie set
             val cDecoded = mutableSetOf<Cookie>()
             // decode and add encoded cookies to cDecoded (if there are any stored)
-            if (!cEncoded.isNullOrEmpty()) {
-                cEncoded.forEach() {
-                    cDecoded.add(
-                        Json.decodeFromString<Cookie>(it)
-                    )
-                }
+            cEncoded.forEach() {
+                cDecoded.add(
+                    Json.decodeFromString<Cookie>(it)
+                )
             }
-            // if adding a cookie that has been stored before (has same name and domain),
-            // delete previous instance and add the new
-            cDecoded.removeIf{it.name == cookie.name && it.domain == cookie.domain}
+            // if adding a cookie that has been stored before (has same name and matches requestUrl - can't use matches
+            // as it does not handle ip address domains, and throws exceptions),
+            // delete previous instance
+            cDecoded.removeAll{it.name == cookie.name && it.domain == requestUrl.host}
+            // and add the new instance of existing cookie or the new cookie
             cDecoded.add(cookie)
             // encode the new set of cookies
             cEncoded = mutableSetOf<String>()
             cDecoded.forEach() {
-                cEncoded.add(Json.encodeToString(it))
+                cEncoded.add(
+                    Json.encodeToString(it.fillDefaults(requestUrl))
+                )
             }
             secureCookieStore.edit().putStringSet(
                 "cookies",
@@ -76,21 +80,19 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
     override suspend fun get(requestUrl: Url): List<Cookie> {
         mx.withLock {
             // currently stored (string) encoded cookie set
-            val cEncoded = secureCookieStore.getStringSet("cookies", emptySet())
+            val cEncoded = secureCookieStore.getStringSet("cookies", mutableSetOf<String>()) ?: mutableSetOf<String>()
             val cDecoded = mutableSetOf<Cookie>()
             // decode and add encoded cookies to cDecoded (if there are any stored)
-            if (!cEncoded.isNullOrEmpty()) {
-                cEncoded.forEach() {
-                    cDecoded.add(
-                        Json.decodeFromString<Cookie>(it)
-                    )
-                }
+            cEncoded.forEach() {
+                cDecoded.add(
+                    Json.decodeFromString<Cookie>(it)
+                )
             }
-            // remove expired cookies
             val now = GMTDate()
             // both cookies (csrf and session) that are returned from django have an expiry date,
             // and consequently expires should be set
-            cDecoded.removeIf {it.expires!! < now}
+            // filter out expired and non requestUrl matching cookies
+            cDecoded.filter {(it.expires != null && now < it.expires!!) || it.domain == requestUrl.host}
             return cDecoded.toList()
         }
     }
