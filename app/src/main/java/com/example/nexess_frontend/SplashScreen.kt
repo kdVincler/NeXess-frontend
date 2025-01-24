@@ -85,7 +85,6 @@ fun SplashScreen_(navController: NavController, modifier: Modifier = Modifier) {
                 onClick = {
                     checkerFunction()
                 },
-
             ) {
                 Text(
                     text = "Try again",
