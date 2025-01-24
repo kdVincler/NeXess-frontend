@@ -34,6 +34,7 @@ fun SplashScreen_(navController: NavController, modifier: Modifier = Modifier) {
     fun checkerFunction() {
         scope.launch {
             isLoading = true
+            redirecting = true
             try {
                 if (KtorClient.checkAuthStat()) {
                     navController.navigate(Routes.RDR)
@@ -93,5 +94,5 @@ fun SplashScreen_(navController: NavController, modifier: Modifier = Modifier) {
             }
         }
     }
-    AlertPopup(showAlert, "Auth. check failed", popUpText, onDismiss = {popUpText = ""; showAlert = false; redirecting = true; })
+    AlertPopup(showAlert, "Auth. check failed", popUpText, onDismiss = {popUpText = ""; showAlert = false;})
 }
