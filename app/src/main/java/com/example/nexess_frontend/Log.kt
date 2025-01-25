@@ -10,9 +10,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,23 +23,7 @@ import androidx.navigation.NavController
 
 @Composable
 fun Log(navController: NavController, modifier: Modifier = Modifier) {
-
-    data class Log(val loc: String, val time: String)
-    // TODO: Call to backend to get current user's entry logs
-    val placeholderLogs = listOf(
-        Log("Door 1", "2024-01-22 12:33"),
-        Log("Door 1", "2024-01-22 13:23"),
-        Log("Door 2", "2024-01-25 10:05"),
-        Log("Door 3", "2024-01-25 11:06"),
-        Log("Door 5", "2024-01-26 12:43"),
-        Log("Door 4", "2024-01-26 16:33"),
-        Log("Door 3", "2024-01-27 09:09"),
-        Log("Door 2", "2024-01-27 17:21"),
-        Log("Door 1", "2024-01-28 09:12"),
-        Log("Door 2", "2024-01-28 10:21"),
-        Log("Door 2", "2024-01-28 10:28"),
-        Log("Door 1", "2024-01-28 17:43"),
-    )
+    val currentUser by UserStore.currentUser.collectAsState()
     Column (
         modifier = modifier
     ) {
@@ -55,12 +42,25 @@ fun Log(navController: NavController, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            items(placeholderLogs) { currentLog ->
-                Column (Modifier.padding(10.dp)){
-                    Text(text = currentLog.loc)
-                    Text(text = currentLog.time, fontStyle = FontStyle.Italic)
+            if ((currentUser?.logs ?: listOf()).isNotEmpty()) {
+                items(currentUser?.logs ?: listOf()) { currentLog ->
+                    Column (Modifier.padding(10.dp)){
+                        Text(text = currentLog.door_desc + " (ID: ${currentLog.door_id})")
+                        Text(text = currentLog.accessed, fontStyle = FontStyle.Italic)
+                    }
+                    HorizontalDivider()
                 }
-                HorizontalDivider()
+            } else {
+                items(count = 1, key = null) {
+                    Text(
+                        text = "No logs to display",
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    )
+                }
             }
         }
         BotNavBar(navController = navController, modifier = modifier.height(60.dp))

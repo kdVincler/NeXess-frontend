@@ -25,9 +25,9 @@ object KtorClient {
     @Serializable
     data class LoginUser(val un: String, val pw: String)
     @Serializable
-    data class AuthLog(val uid: Int, val doorId: Int, val accessed: String)
+    data class AuthLog(val uid: Int, val door_id: Int, val door_desc: String, val accessed: String)
     @Serializable
-    data class AuthUser(val id: Int, val un: String, val name: String, val perm: Int, val logs: List<AuthLog>)
+    data class AuthUser(val name: String, val perm: Int, val logs: List<AuthLog>)
     @Serializable
     data class AuthStatus(val authenticated: Boolean, val user: AuthUser?)
 
@@ -48,7 +48,7 @@ object KtorClient {
         checkAuthStat()
     }
 
-    suspend fun checkAuthStat(): Boolean{
+    suspend fun checkAuthStat(): Boolean {
         val response = client.get("$API/check_auth_status/") {
             headers {
                 contentType(ContentType.Application.Json)
@@ -59,12 +59,11 @@ object KtorClient {
         }
         val status: AuthStatus = response.body()
         if (status.authenticated) {
-            // TODO: set user globally to status.user's values
-            return true
+            UserStore.setUser(status.user)
         } else {
-            // TODO: set user globally to null just to be sure
-            return false
+            UserStore.clearUser()
         }
+        return status.authenticated
     }
 
     suspend fun logout(){

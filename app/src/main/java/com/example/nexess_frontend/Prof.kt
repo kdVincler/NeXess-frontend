@@ -14,6 +14,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,8 +33,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Prof(navController: NavController, modifier: Modifier = Modifier) {
-    data class User(val name: String, val permissionLevel: Int) // TODO: after implementing global user var, delete
-    val currentUser = User("John User", 5) // TODO: after implementing global user var, delete
+    val currentUser by UserStore.currentUser.collectAsState()
     var popUpText by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var showAlert by remember { mutableStateOf(false) }
@@ -73,7 +73,13 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
             )
             Text(
                 fontSize = 30.sp,
-                text = currentUser.name
+                text = if (currentUser?.name?.trim()?.isEmpty() == true) {
+                    "-"
+                    // this will only be reached if the current account doesn't have any first or last
+                    // name set, resulting the server retuning a single whitespace as currentUser.name
+                } else {
+                    currentUser?.name ?: ""
+                }
             )
 
             Text(
@@ -85,7 +91,7 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
             )
             Text(
                 fontSize = 30.sp,
-                text = "Level " + currentUser.permissionLevel.toString()
+                text = "Level " + currentUser?.perm.toString()
             )
             Button(
                 onClick = {
