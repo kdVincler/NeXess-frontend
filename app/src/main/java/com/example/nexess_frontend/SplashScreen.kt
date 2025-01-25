@@ -51,6 +51,10 @@ fun SplashScreen_(navController: NavController, modifier: Modifier = Modifier) {
         }
     }
 
+    // on first display of this composable, run the checkerFunction,
+    // which either results in navigation to a dif. screen or the try
+    // again button showing which will run the same function again
+    // when the user clicks it
     LaunchedEffect(Unit) {
         checkerFunction()
     }
@@ -82,6 +86,10 @@ fun SplashScreen_(navController: NavController, modifier: Modifier = Modifier) {
             )
         }
         if (!isLoading && !redirecting) {
+            Text(
+                text = "Authentication check failed",
+                color = Color.White
+            )
             Button(
                 onClick = {
                     checkerFunction()
