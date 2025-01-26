@@ -91,7 +91,7 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
             )
             Text(
                 fontSize = 30.sp,
-                text = "Level " + currentUser?.perm.toString()
+                text = "Level " + (currentUser?.perm ?: 0).toString()
             )
             Button(
                 onClick = {
