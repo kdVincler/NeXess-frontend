@@ -6,7 +6,6 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import io.ktor.client.plugins.cookies.CookiesStorage
 import io.ktor.client.plugins.cookies.fillDefaults
-import io.ktor.client.plugins.cookies.matches
 import io.ktor.http.Cookie
 import io.ktor.http.Url
 import io.ktor.util.date.GMTDate
@@ -61,9 +60,14 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
             // as it does not handle ip address domains, and throws exceptions),
             // delete previous instance
             cDecoded.removeAll{it.name == cookie.name && it.domain == requestUrl.host}
-            // and add the new instance of existing cookie or the new cookie
-            cDecoded.add(cookie)
-            // encode the new set of cookies
+            // and add the new instance of existing cookie but only if the new cookie has value,
+            // as when a sessionid cookie gets deleted, Ktor handles it as a sessionid cookie with no
+            // value, so don't add that. This combined with the previous removeAll statement results in
+            // sessionid cookie not being stored
+            if (cookie.value.isNotBlank()) {
+                cDecoded.add(cookie)
+            }
+            // encode edited set of cookies
             cEncoded = mutableSetOf<String>()
             cDecoded.forEach() {
                 cEncoded.add(
@@ -92,7 +96,7 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
             // both cookies (csrf and session) that are returned from django have an expiry date,
             // and consequently expires should be set
             // filter out expired and non requestUrl matching cookies
-            cDecoded.filter {(it.expires != null && now < it.expires!!) || it.domain == requestUrl.host}
+            cDecoded.filter {(it.expires != null && now < it.expires!!) && it.domain == requestUrl.host}
             return cDecoded.toList()
         }
     }
