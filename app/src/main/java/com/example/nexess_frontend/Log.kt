@@ -86,7 +86,7 @@ fun Log(navController: NavController, modifier: Modifier = Modifier) {
                     .fillMaxHeight()
             ) {
                 if ((currentUser?.logs ?: listOf()).isNotEmpty()) {
-                    items(currentUser?.logs ?: listOf()) { currentLog ->
+                    items(currentUser!!.logs) { currentLog ->
                         Column (Modifier.padding(10.dp)){
                             Text(text = currentLog.door_desc + " (ID: ${currentLog.door_id})")
                             Text(text = currentLog.accessed, fontStyle = FontStyle.Italic)
@@ -109,5 +109,5 @@ fun Log(navController: NavController, modifier: Modifier = Modifier) {
         }
         BotNavBar(navController = navController, modifier = modifier.height(60.dp))
     }
-    AlertPopup(showAlert, "Log fetching failed", popUpText, onDismiss = {popUpText = ""; showAlert = false })
+    AlertPopup(showAlert, "Access log fetching failed", popUpText, onDismiss = {popUpText = ""; showAlert = false })
 }

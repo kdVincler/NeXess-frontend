@@ -123,6 +123,6 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
         }
         BotNavBar(navController = navController, modifier = modifier.height(60.dp))
     }
-    AlertPopup(showAlert, "Error", popUpText, onDismiss = {popUpText = ""; showAlert = false })
+    AlertPopup(showAlert, "Logout failed", popUpText, onDismiss = {popUpText = ""; showAlert = false })
     LoadingOverlay(isLoading)
 }
