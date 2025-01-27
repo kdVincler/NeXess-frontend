@@ -51,7 +51,7 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
             // currently stored decoded cookie set
             val cDecoded = mutableSetOf<Cookie>()
             // decode and add encoded cookies to cDecoded (if there are any stored)
-            cEncoded.forEach() {
+            cEncoded.forEach {
                 cDecoded.add(
                     Json.decodeFromString<Cookie>(it)
                 )
@@ -69,7 +69,7 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
             }
             // encode edited set of cookies
             cEncoded = mutableSetOf<String>()
-            cDecoded.forEach() {
+            cDecoded.forEach {
                 cEncoded.add(
                     Json.encodeToString(it.fillDefaults(requestUrl))
                 )
@@ -87,7 +87,7 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
             val cEncoded = secureCookieStore.getStringSet("cookies", mutableSetOf<String>()) ?: mutableSetOf<String>()
             val cDecoded = mutableSetOf<Cookie>()
             // decode and add encoded cookies to cDecoded (if there are any stored)
-            cEncoded.forEach() {
+            cEncoded.forEach {
                 cDecoded.add(
                     Json.decodeFromString<Cookie>(it)
                 )
@@ -96,8 +96,8 @@ class CustomSecurePersistentCookieStorage(c: Context) : CookiesStorage{
             // both cookies (csrf and session) that are returned from django have an expiry date,
             // and consequently expires should be set
             // filter out expired and non requestUrl matching cookies
-            cDecoded.filter {(it.expires != null && now < it.expires!!) && it.domain == requestUrl.host}
-            return cDecoded.toList()
+            val cFiltered = cDecoded.filter {(it.expires != null && now < it.expires!!) && it.domain == requestUrl.host}
+            return cFiltered.toList()
         }
     }
 
