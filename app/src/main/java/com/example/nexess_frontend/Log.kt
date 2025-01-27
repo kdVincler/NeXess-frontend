@@ -109,5 +109,5 @@ fun Log(navController: NavController, modifier: Modifier = Modifier) {
         }
         BotNavBar(navController = navController, modifier = modifier.height(60.dp))
     }
-    AlertPopup(showAlert, "Login failed", popUpText, onDismiss = {popUpText = ""; showAlert = false })
+    AlertPopup(showAlert, "Log fetching failed", popUpText, onDismiss = {popUpText = ""; showAlert = false })
 }
