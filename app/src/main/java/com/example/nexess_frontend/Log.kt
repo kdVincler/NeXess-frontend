@@ -88,7 +88,7 @@ fun Log(navController: NavController, modifier: Modifier = Modifier) {
                 if ((currentUser?.logs ?: listOf()).isNotEmpty()) {
                     items(currentUser!!.logs) { currentLog ->
                         Column (Modifier.padding(10.dp)){
-                            Text(text = currentLog.door_desc + " (ID: ${currentLog.door_id})")
+                            Text(text = currentLog.door_desc + " (Door ID: ${currentLog.door_id})")
                             Text(text = currentLog.accessed, fontStyle = FontStyle.Italic)
                         }
                         HorizontalDivider()

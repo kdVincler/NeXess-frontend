@@ -72,13 +72,13 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(top = 15.dp)
             )
             Text(
-                fontSize = 30.sp,
+                fontSize = 25.sp,
                 text = if (currentUser?.name?.trim()?.isEmpty() == true) {
                     "-"
                     // this will only be reached if the current account doesn't have any first or last
                     // name set, resulting the server returning a single whitespace as currentUser.name
                 } else {
-                    currentUser?.name ?: ""
+                    currentUser?.name ?: "-"
                 }
             )
 
@@ -90,8 +90,8 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(top = 15.dp)
             )
             Text(
-                fontSize = 30.sp,
-                text = "Level " + (currentUser?.perm ?: 0).toString()
+                fontSize = 25.sp,
+                text = (currentUser?.perm ?: "Level 0 - Guest")
             )
             Button(
                 onClick = {
