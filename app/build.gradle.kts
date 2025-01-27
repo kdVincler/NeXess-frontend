@@ -87,4 +87,5 @@ dependencies {
     implementation(libs.io.ktor.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
 
+    implementation(libs.material3)
 }
