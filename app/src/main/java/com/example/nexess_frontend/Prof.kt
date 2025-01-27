@@ -76,7 +76,7 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
                 text = if (currentUser?.name?.trim()?.isEmpty() == true) {
                     "-"
                     // this will only be reached if the current account doesn't have any first or last
-                    // name set, resulting the server retuning a single whitespace as currentUser.name
+                    // name set, resulting the server returning a single whitespace as currentUser.name
                 } else {
                     currentUser?.name ?: ""
                 }
