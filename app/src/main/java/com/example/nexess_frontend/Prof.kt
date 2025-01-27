@@ -1,17 +1,17 @@
 package com.example.nexess_frontend
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -58,36 +59,38 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            Icon(
-                imageVector = Icons.Default.AccountBox,
-                contentDescription = Icons.Default.AccountBox.name,
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(200.dp)
-            )
+                    .clip(CircleShape)
+                    .background(if (isSystemInDarkTheme()) Color.White else Color.Black)
+            ) {
+                Text(
+                    text = currentUser?.initials ?: "-",
+                    fontSize = 90.sp,
+                    color = if (isSystemInDarkTheme()) Color.Black else Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             Text(
                 text = "Name",
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
-                fontSize = 30.sp,
-                modifier = Modifier.padding(top = 15.dp)
+                fontSize = 23.sp,
+                modifier = Modifier.padding(top = 25.dp)
             )
             Text(
                 fontSize = 25.sp,
-                text = if (currentUser?.name?.trim()?.isEmpty() == true) {
-                    "-"
-                    // this will only be reached if the current account doesn't have any first or last
-                    // name set, resulting the server returning a single whitespace as currentUser.name
-                } else {
-                    currentUser?.name ?: "-"
-                }
+                text = currentUser?.name ?: "-"
             )
 
             Text(
                 text = "Permission level",
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
-                fontSize = 30.sp,
-                modifier = Modifier.padding(top = 15.dp)
+                fontSize = 23.sp,
+                modifier = Modifier.padding(top = 25.dp)
             )
             Text(
                 fontSize = 25.sp,
@@ -113,10 +116,10 @@ fun Prof(navController: NavController, modifier: Modifier = Modifier) {
                         containerColor = Color.Red,
                         contentColor = Color.White
                     ),
-                modifier = Modifier.padding(top = 15.dp)
+                modifier = Modifier.padding(top = 25.dp)
             ) {
                 Text(
-                    fontSize = 30.sp,
+                    fontSize = 25.sp,
                     text = "Log out"
                 )
             }

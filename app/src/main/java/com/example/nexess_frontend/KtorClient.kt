@@ -27,7 +27,7 @@ object KtorClient {
     @Serializable
     data class AuthLog(val uid: Int, val door_id: Int, val door_desc: String, val accessed: String)
     @Serializable
-    data class AuthUser(val name: String, val perm: String, val logs: List<AuthLog>)
+    data class AuthUser(val initials: String, val name: String, val perm: String, val logs: List<AuthLog>)
     @Serializable
     data class AuthStatus(val authenticated: Boolean, val user: AuthUser?)
 
