@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -88,8 +89,15 @@ fun Log(navController: NavController, modifier: Modifier = Modifier) {
                 if ((currentUser?.logs ?: listOf()).isNotEmpty()) {
                     items(currentUser!!.logs) { currentLog ->
                         Column (Modifier.padding(10.dp)){
-                            Text(text = currentLog.door_desc + " (Door ID: ${currentLog.door_id})")
-                            Text(text = currentLog.accessed, fontStyle = FontStyle.Italic)
+                            if (currentLog.perm_granted) {
+                                Text(text = currentLog.door_desc + " (Door ID: ${currentLog.door_id})")
+                                Text(text = currentLog.accessed, fontStyle = FontStyle.Italic)
+                            } else {
+                                Text(text = "ACCESS DENIED", color = Color.Red, textDecoration = TextDecoration.Underline)
+                                Text(text = currentLog.door_desc + " (Door ID: ${currentLog.door_id})",
+                                    color = Color.Red)
+                                Text(text = currentLog.accessed, fontStyle = FontStyle.Italic, color = Color.Red)
+                            }
                         }
                         HorizontalDivider()
                     }

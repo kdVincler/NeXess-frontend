@@ -25,13 +25,15 @@ object KtorClient {
     @Serializable
     data class LoginUser(val un: String, val pw: String)
     @Serializable
-    data class AuthLog(val uid: Int, val door_id: Int, val door_desc: String, val accessed: String)
+    data class AuthLog(val uid: Int, val door_id: Int, val door_desc: String, val accessed: String, val perm_granted: Boolean)
     @Serializable
     data class AuthUser(val initials: String, val name: String, val perm: String, val logs: List<AuthLog>)
     @Serializable
     data class AuthStatus(val authenticated: Boolean, val user: AuthUser?)
+    @Serializable
+    data class Door(val id: Int)
 
-    suspend fun login(un: String, pw: String){
+    suspend fun login(un: String, pw: String) {
         val csrfToken = client.cookies(API).firstOrNull{it.name == "csrftoken"}?.value ?: ""
         val response = client.post("$API/login/") {
             headers {
@@ -66,7 +68,28 @@ object KtorClient {
         return status.authenticated
     }
 
-    suspend fun logout(){
+    suspend fun openDoor(id: Int) {
+        val csrfToken = client.cookies(API).firstOrNull{it.name == "csrftoken"}?.value ?: ""
+        val response = client.post("$API/door-control/") {
+            headers {
+                append("X-CSRFToken", csrfToken)
+            }
+            contentType(ContentType.Application.Json)
+            setBody(Door(id))
+        }
+        if (response.status.value != 200) {
+            // Because I return 403 status for permission denied door opening requests,
+            // I have to call checkAuthStat() here, to ensure the user doesn't have to refresh on the
+            // log screen
+            checkAuthStat()
+            val b: ErrorMsg = response.body()
+            throw Exception("${b.error} (${response.status.value} - ${response.status.description})")
+        }
+        // checkAuthStat to update global user's logs
+        checkAuthStat()
+    }
+
+    suspend fun logout() {
         val response = client.get("$API/logout/")
         if (response.status.value != 200) {
             throw Exception("Exception raised during logout. (${response.status.value})")
