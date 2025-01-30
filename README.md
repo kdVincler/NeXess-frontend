@@ -14,13 +14,13 @@ The project requires the following hardware:
 >
 > **This project works on your local network, using your laptop's current IP address as a server URL. It needs both the phone and machine running the server to be connected to the same WiFi network**
 >
-> **Also take note that eduroam and similar WiFi networks will not allow the traffic the project generates. If these kind of networks are the only available network around, use the mobile network hotspot of a different mobile phone insted.**
+> **Also take note that eduroam and similar WiFi networks will not allow the traffic the project generates. If these kinds of networks are the only available network around, use the mobile network hotspot of a different mobile phone instead.**
 
 ## Setup instructions
 
 To run & test this project on your own machine, ensure [the backend server](https://github.com/kdVincler/NeXess_backend) is installed and running on your machine and that your android device and machine are on the same WiFi network then follow these steps:
 
-1. Donwload or clone this repository
+1. Download or clone this repository
 
 2. In the root directory of this repository (i.e. the same folder this README file is in) create a file called `env.properties` and in it declare & set a variable called `IP_ADDRESS` to your laptop's current IP address as shown below (can be achieved with opening the created `env.properties` file in any text editor)
 
@@ -68,7 +68,7 @@ Always ensure the environmental variable is set to the correct value, otherwise 
 
   3. Using the NFC Tools application (or any other NFC tag utility application), write a single Text (text/plain) record containing the ID number which you can find on the overview of the Door table
 
-- After launching the app, there is a splash screen that checks with the server (using the cookies persisted) if the user is logged in/autherised. If they are, the application navigates to the reader screen, if they are not, the login screen is shown
+- After launching the app, there is a splash screen that checks with the server (using the cookies persisted) if the user is logged in/authorised. If they are, the application navigates to the reader screen, if they are not, the login screen is shown
 
 - Doors can be "opened" through scanning NFC tags while on the reader screen (NFC scanning is active while the indicator is shown on screen)
 
