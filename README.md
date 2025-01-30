@@ -47,7 +47,7 @@ To run & test this project on your own machine, ensure [the backend server](http
 
 ### A note on the `IP_ADDRESS` environmental variable.
 
-Every time your IP address changes (you try to run the project on a different network then when local setup happened), you need to edit the value of `IP_ADDRESS` in `env.properties`, save the file, and then clean, rebuild and rerun/reinstall the new version of the application.
+Every time your IP address changes (i.e. you try to run the project on a different network then when local setup happened), you need to edit the value of `IP_ADDRESS` in `env.properties`, save the file, and then clean, rebuild and rerun/reinstall the new version of the application.
 Always ensure the environmental variable is set to the correct value, otherwise the project will not work.
 
 - **Clean build:** In Android Studio from the toolbar select Build > Clean Project and wait for it to finish
