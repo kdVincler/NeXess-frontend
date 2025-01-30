@@ -24,7 +24,7 @@ To run & test this project on your own machine, ensure [the backend server](http
 
 2. In the root directory of this repository (i.e. the same folder this README file is in) create a file called `env.properties` and set it to your laptop's current IP address as shown below (can be achieved with opening the created `env.properties` file in any text editor)
 
-   ```json
+   ```kotlin
    IP_ADDRESS="YOUR_IP_ADDRESS_HERE"
    ```
 
